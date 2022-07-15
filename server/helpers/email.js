@@ -1,27 +1,29 @@
-const nodeMailer = require("nodemailer")
+const nodemailer = require("nodemailer")
 
-exports.sendEmailWithNodemailer = (req, res, emailData) => {
-  const transporter = nodeMailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
+exports.sendEmail = (to, subject, message, template) => {
+  const transporter = nodemailer.createTransport({
+    host: "65.1.150.134",
+    port: 5679,
     secure: false,
-    requireTLS: true,
     auth: {
-      user: "your_name@gmail.com", // MAKE SURE THIS EMAIL IS YOUR GMAIL FOR WHICH YOU GENERATED APP PASSWORD
-      pass: "your_app_specific_gmail_password", // MAKE SURE THIS PASSWORD IS YOUR GMAIL APP PASSWORD WHICH YOU GENERATED EARLIER
-    },
-    tls: {
-      ciphers: "SSLv3",
+      user: null,
+      pass: null,
     },
   })
 
-  return transporter
-    .sendMail(emailData)
-    .then((info) => {
-      console.log(`Message sent: ${info.response}`)
-      return res.json({
-        message: `Email has been sent to your email. Follow the instruction to activate your account`,
-      })
-    })
-    .catch((err) => console.log(`Problem sending email: ${err}`))
+  const mailOption = {
+    from: "noreply@neputer.com",
+    to: to,
+    subject: subject,
+    text: message,
+    html: template,
+  }
+
+  transporter.sendMail(mailOption, function (err, info) {
+    if (err) {
+      return false
+    } else {
+      return true
+    }
+  })
 }
