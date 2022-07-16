@@ -12,22 +12,22 @@ exports.signup = (req, res) => {
       return res.status(400).json({
         error: "Email is taken",
       })
+    } else {
+      const token = jwt.sign(
+        { name, email, password },
+        process.env.JWT_ACCOUNT_ACTIVATION,
+        { expiresIn: "10m" }
+      )
+      sendEmail(
+        email,
+        "Email verification",
+        "Please verify your email .",
+        emailVerificationTemplate(name, emailVerificationLink(token))
+      )
+      return res.json({
+        message: `Email has been sent to ${email}. Follow the instruction to active your account.`,
+      })
     }
-
-    const token = jwt.sign(
-      { name, email, password },
-      process.env.JWT_ACCOUNT_ACTIVATION,
-      { expiresIn: "10m" }
-    )
-    sendEmail(
-      email,
-      "Email verification",
-      "Please verify your email .",
-      emailVerificationTemplate(name, emailVerificationLink(token))
-    )
-  })
-  return res.json({
-    message: `Email has been sent to ${email}. Follow the instruction to active your account.`,
   })
 }
 
