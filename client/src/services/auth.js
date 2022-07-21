@@ -1,6 +1,6 @@
 import authClient from "./index"
 import { toast } from "react-toastify"
-import { authenticate } from "../components/auth/helpers"
+import { authenticate } from "../helpers/helpers"
 
 const resource = "api"
 
@@ -29,7 +29,6 @@ export default class Auth {
 
   // login
   signin(payload, setPayload, history) {
-    console.log(history)
     return new Promise(() => {
       authClient
         .post(`${resource}/signin`, payload)
@@ -50,6 +49,21 @@ export default class Auth {
         })
         .catch((error) => {
           setPayload({ ...payload, buttonText: "Sign In" })
+          toast.error(error.response.data.error)
+        })
+    })
+  }
+  // Activate account
+  activate(token, setPayload, payload, history) {
+    return new Promise(() => {
+      authClient
+        .post(`${resource}/account-activation`, { token })
+        .then((response) => {
+          setPayload({ ...payload, show: false })
+          toast.success(response.data.message)
+          history.push("/")
+        })
+        .catch((error) => {
           toast.error(error.response.data.error)
         })
     })

@@ -3,7 +3,9 @@ import Layout from "./components/core/layout"
 function App() {
   return (
     <Layout>
-      <h1>Iam auth mern</h1>
+      <div className="d-flex justify-content-center mt-5">
+        <h1>Iam auth mern</h1>
+      </div>
     </Layout>
   )
 }

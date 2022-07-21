@@ -1,4 +1,4 @@
-import { isAuth, signout } from "../auth/helpers"
+import { isAuth, signout } from "../../helpers/helpers"
 import { Link } from "react-router-dom"
 import { Fragment } from "react"
 
