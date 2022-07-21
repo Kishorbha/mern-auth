@@ -1,6 +1,6 @@
 import authClient from "./index"
 import { toast } from "react-toastify"
-import { authenticate } from "../helpers/helpers"
+import { authenticate, isAuth } from "../helpers/helpers"
 
 const resource = "api"
 
@@ -44,7 +44,9 @@ export default class Auth {
             })
 
             toast.success(`Hey ${response.data.user.name}, Welcome back!`)
-            history.push("/")
+            isAuth() && isAuth().role === "admin"
+              ? history.push("/admin")
+              : history.push("/private")
           })
         })
         .catch((error) => {
