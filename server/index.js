@@ -23,6 +23,8 @@ const connectDB = async () => {
   }
 }
 
+const userRoutes = require("./routes/user")
+
 connectDB()
 const port = process.env.PORT || 3000
 
@@ -35,6 +37,7 @@ if ((process.env.NODE_ENV = "development")) {
 
 // middleware
 app.use(`/api`, authRoutes)
+app.use("/api", userRoutes)
 
 app.listen(port, () => {
   console.log(`API is running on port ${port}`)

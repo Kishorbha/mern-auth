@@ -1,7 +1,7 @@
 import { Redirect, Route } from "react-router-dom"
 import { isAuth } from "../helpers/helpers"
 
-const Private = ({ component: Component, ...rest }) => (
+const Private = ({ Component: Component, ...rest }) => (
   <Route
     {...rest}
     render={(props) =>
