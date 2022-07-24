@@ -53,7 +53,7 @@ const Navbar = ({ match, history }) => {
         <li className="nav-item">
           <span
             className="nav-link"
-            style={{ cursor: "pointer", color: "#fff" }}
+            style={isActive("/signout")}
             onClick={() => {
               signout(() => {
                 history.push("/")
