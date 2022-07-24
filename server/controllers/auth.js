@@ -4,6 +4,7 @@ const { emailVerificationTemplate } = require("../helpers/email-template")
 const { sendEmail } = require("../helpers/email")
 const { emailVerificationLink } = require("../constants/links")
 
+// User Signup via Mail
 exports.signup = (req, res) => {
   const { name, email, password } = req.body
 
@@ -31,6 +32,7 @@ exports.signup = (req, res) => {
   })
 }
 
+// User Account Activation
 exports.accountActivation = (req, res) => {
   const { token } = req.body
 
@@ -70,6 +72,7 @@ exports.accountActivation = (req, res) => {
   }
 }
 
+// User SignIn
 exports.signin = (req, res) => {
   const { email, password } = req.body
   // check if user exist

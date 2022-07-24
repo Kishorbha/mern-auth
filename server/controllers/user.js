@@ -10,9 +10,7 @@ exports.getUserByID = (req, res) => {
         error: "User not found",
       })
     }
-    user.hashed_password = undefined
-    user.salt = undefined
-    res.json(user)
+    res.json(userToSend(user))
   })
 }
 
@@ -35,5 +33,37 @@ exports.getUser = async (req, res, next) => {
 // Update User
 exports.update = (req, res) => {
   const { name, password } = req.body
-  console.log(req.body)
+  console.log(req)
+
+  userModel.findOne({ _id: req.user._id }, (err, user) => {
+    if (err || !user) {
+      return res.status(400).json({
+        error: "User not found",
+      })
+    }
+    if (!name) {
+      return res.status(400).json({
+        error: "Name is required",
+      })
+    } else {
+      user.name = name
+    }
+    if (password) {
+      if (password.length < 6) {
+        return res.status(400).json({
+          error: "Password must be min 6 characters long",
+        })
+      } else {
+        user.password = password
+      }
+    }
+    user.save((err, updatedUser) => {
+      if (err) {
+        return res.status(400).json({
+          error: "User update failed",
+        })
+      }
+      res.json(userToSend(updatedUser))
+    })
+  })
 }
