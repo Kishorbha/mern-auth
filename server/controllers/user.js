@@ -33,7 +33,6 @@ exports.getUser = async (req, res, next) => {
 // Update User
 exports.update = (req, res) => {
   const { name, password } = req.body
-  console.log(req)
 
   userModel.findOne({ _id: req.user._id }, (err, user) => {
     if (err || !user) {

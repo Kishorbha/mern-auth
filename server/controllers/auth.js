@@ -2,7 +2,11 @@ const User = require("../models/user")
 const jwt = require("jsonwebtoken")
 const { emailVerificationTemplate } = require("../helpers/email-template")
 const { sendEmail } = require("../helpers/email")
-const { emailVerificationLink } = require("../constants/links")
+const {
+  emailVerificationLink,
+  passwordResetLink,
+} = require("../constants/links")
+const _ = require("lodash")
 
 // User Signup via Mail
 exports.signup = (req, res) => {
@@ -99,4 +103,81 @@ exports.signin = (req, res) => {
       user: { _id, name, email, role },
     })
   })
+}
+
+// Forget Password
+exports.forgetPassword = (req, res) => {
+  const { email, name } = req.body
+  User.findOne({ email }, (err, user) => {
+    if (err || !user) {
+      return res.status(400).json({
+        error: "User Do not Match",
+      })
+    }
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_RESET_PASSWORD, {
+      expiresIn: "5m",
+    })
+
+    return user.updateOne({ resetPasswordLink: token }, (err, sucess) => {
+      if (err) {
+        return res.status(400).json({
+          error: "Database connection on user password forget request",
+        })
+      } else {
+        sendEmail(
+          email,
+          "Password Reset Link",
+          "",
+          emailVerificationTemplate(name, passwordResetLink(token))
+        )
+        return res.json({
+          message: `Email has been sent to ${email}. Follow the instruction .`,
+        })
+      }
+    })
+  })
+}
+
+// Reset Password
+exports.resetPassword = (req, res) => {
+  const { resetPasswordLink, newPassword } = req.body
+  if (resetPasswordLink) {
+    jwt.verify(
+      resetPasswordLink,
+      process.env.JWT_RESET_PASSWORD,
+      function (err, decoded) {
+        if (err) {
+          return res.status(400).json({
+            error: "Expired link. Try again",
+          })
+        }
+
+        User.findOne({ resetPasswordLink }, (err, user) => {
+          if (err || !user) {
+            return res.status(400).json({
+              error: "Something went wrong. Try later",
+            })
+          }
+
+          const updatedFields = {
+            password: newPassword,
+            resetPasswordLink: "",
+          }
+
+          user = _.extend(user, updatedFields)
+
+          user.save((err, result) => {
+            if (err) {
+              return res.status(400).json({
+                error: "Error resetting user password",
+              })
+            }
+            res.json({
+              message: `Great! Now you can login with your new password`,
+            })
+          })
+        })
+      }
+    )
+  }
 }

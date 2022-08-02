@@ -51,7 +51,8 @@ const Navbar = ({ match, history }) => {
 
       {isAuth() && (
         <li className="nav-item">
-          <span
+          <Link
+            to="/"
             className="nav-link"
             style={isActive("/signout")}
             onClick={() => {
@@ -61,7 +62,7 @@ const Navbar = ({ match, history }) => {
             }}
           >
             Signout
-          </span>
+          </Link>
         </li>
       )}
     </ul>

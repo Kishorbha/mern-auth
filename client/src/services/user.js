@@ -17,7 +17,6 @@ export default class User {
           setPayload(response.data)
         })
         .catch((error) => {
-          console.log(error)
           if (error.response.status === 401) {
             signout(() => history.push("/"))
           }
